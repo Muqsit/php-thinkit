@@ -5,6 +5,7 @@ Think-Kit is a library that offers a generic machine learning implementation.
 
 
 ## Example Usage
+The following is the equivalent of [this python code](https://gist.github.com/Muqsit/2b85711f8b8d7cad63b764c201432693):
 ```php
 $training_input = Matrix::create([
     [0, 0, 1],
