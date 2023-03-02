@@ -14,7 +14,7 @@ $training_input = Matrix::create([
 ]);
 $training_output = Matrix::create([[0, 1, 1, 0]])->transpose();
 
-$model = SimpleNeuralNetworkModel::create(iterations: 10_000)->transpose());
+$model = SimpleNeuralNetworkModel::create(iterations: 10_000);
 $model->train($training_input, $training_output);
 $model->predict(Matrix::create([[1, 0, 0]])); // [[0.99991188]]
 ```
