@@ -1,0 +1,27 @@
+{
+    "name": "muqsit/php-thinkit",
+    "description": "Think-Kit is a library that offers a generic machine learning implementation.",
+    "license": "GPL-3.0-only",
+    "require": {
+        "php": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "muqsit\\thinkit\\": "src/muqsit/thinkit"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "muqsit\\arithmexp\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Muqsit",
+            "email": "notmuqsit@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
+}
