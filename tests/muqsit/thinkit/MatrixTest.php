@@ -19,13 +19,13 @@ final class MatrixTest extends TestCase{
 		$this->assertEmpty(Matrix::create([[], []])->values);
 	}
 
-	public function testInvalidSizeOf() : void{
+	public function testInvalidSizeFull() : void{
 		$this->expectException(InvalidArgumentException::class);
 		$this->expectExceptionMessage("Number of columns must be >= 0, got -1");
 		Matrix::full(rows: 1, columns: -1, value: 0);
 	}
 
-	public function testValidNSize() : void{
+	public function testValidSizeFull() : void{
 		$this->assertEquals(Matrix::create([
 			[0, 0],
 			[0, 0],
