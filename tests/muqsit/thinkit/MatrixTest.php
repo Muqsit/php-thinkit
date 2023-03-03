@@ -170,4 +170,14 @@ final class MatrixTest extends TestCase{
 		$m2 = Matrix::full(rows: 0, columns: 1, value: 2);
 		$this->assertEquals(Matrix::full(1, 1, 0), $m1->dot($m2));
 	}
+
+	public function testTranspose() : void{
+		$matrix = Matrix::full(rows: 1, columns: 3, value: 1);
+		$this->assertEquals(Matrix::create([[1], [1], [1]]), $matrix->transpose());
+		$this->assertEquals($matrix, $matrix->transpose()->transpose());
+
+		$matrix = Matrix::full(rows: 3, columns: 1, value: 1);
+		$this->assertEquals(Matrix::create([[1, 1, 1]]), $matrix->transpose());
+		$this->assertEquals($matrix, $matrix->transpose()->transpose());
+	}
 }
