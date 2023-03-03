@@ -19,7 +19,13 @@ final class MatrixTest extends TestCase{
 		$this->assertEmpty(Matrix::create([[], []])->values);
 	}
 
-	public function testInvalidSizeFull() : void{
+	public function testInvalidRowSizeFull() : void{
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage("Number of rows must be >= 0, got -1");
+		Matrix::full(rows: -1, columns: 1, value: 0);
+	}
+
+	public function testInvalidColumnSizeFull() : void{
 		$this->expectException(InvalidArgumentException::class);
 		$this->expectExceptionMessage("Number of columns must be >= 0, got -1");
 		Matrix::full(rows: 1, columns: -1, value: 0);
@@ -41,7 +47,13 @@ final class MatrixTest extends TestCase{
 		]), Matrix::full(rows: 2, columns: 3, value: 2));
 	}
 
-	public function testInvalidSizeRandom() : void{
+	public function testInvalidRowSizeRandom() : void{
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage("Number of rows must be >= 0, got -1");
+		Matrix::random(rows: -1, columns: 1);
+	}
+
+	public function testInvalidColumnSizeRandom() : void{
 		$this->expectException(InvalidArgumentException::class);
 		$this->expectExceptionMessage("Number of columns must be >= 0, got -1");
 		Matrix::random(rows: 1, columns: -1);
