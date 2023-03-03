@@ -8,6 +8,7 @@ use Closure;
 use InvalidArgumentException;
 use muqsit\thinkit\random\MersenneTwisterRandom;
 use function count;
+use function max;
 use function round;
 use function sprintf;
 use const PHP_ROUND_HALF_UP;
@@ -115,6 +116,11 @@ final class Matrix{
 	 * @return self
 	 */
 	public function broadcast(int $rows, int $columns) : self{
+		$rows >= $this->rows || throw new InvalidArgumentException(sprintf("Cannot broadcast matrix of size %dx%d to %dx%d", $this->rows, $this->columns, $rows, $columns));
+		$columns >= $this->columns || throw new InvalidArgumentException(sprintf("Cannot broadcast matrix of size %dx%d to %dx%d", $this->rows, $this->columns, $rows, $columns));
+		$rows === 1 || $rows === $this->rows || $this->rows === 1 || throw new InvalidArgumentException(sprintf("Cannot broadcast matrix of size %dx%d to %dx%d", $this->rows, $this->columns, $rows, $columns));
+		$columns === 1 || $columns === $this->columns || $this->columns === 1 || throw new InvalidArgumentException(sprintf("Cannot broadcast matrix of size %dx%d to %dx%d", $this->rows, $this->columns, $rows, $columns));
+
 		$values = [];
 		for($i = 0; $i < $rows; $i++){
 			$row = [];
@@ -148,24 +154,20 @@ final class Matrix{
 	 * @return self
 	 */
 	public function broadcastAndApply(self $rvalue, Closure $function) : self{
-		if($this->rows !== $rvalue->rows || $this->columns !== $rvalue->columns){
-			if($this->columns === $rvalue->rows){
-				$b = $this->broadcast($rvalue->rows, $this->columns);
-				$b_rvalue = $rvalue->broadcast($rvalue->rows, $this->columns);
-				return $b->broadcastAndApply($b_rvalue, $function);
-			}
-			throw new InvalidArgumentException(sprintf("Cannot broadcast and apply a %dx%d matrix with another %dx%d matrix", $this->rows, $this->columns, $rvalue->rows, $rvalue->columns));
-		}
+		$rows = max($this->rows, $rvalue->rows);
+		$columns = max($this->columns, $rvalue->columns);
+		$lvalue = $this->rows !== $rows || $this->columns !== $columns ? $this->broadcast($rows, $columns) : $this;
+		$rvalue = $rvalue->rows !== $rows || $rvalue->columns !== $columns ? $rvalue->broadcast($rows, $columns) : $rvalue;
 
 		$values = [];
-		for($i = 0; $i < $this->rows; $i++){
+		for($i = 0; $i < $rows; $i++){
 			$row = [];
-			for($j = 0; $j < $this->columns; $j++){
-				$row[] = $function($this->values[$i][$j], $rvalue->values[$i][$j]);
+			for($j = 0; $j < $columns; $j++){
+				$row[] = $function($lvalue->values[$i][$j], $rvalue->values[$i][$j]);
 			}
 			$values[] = $row;
 		}
-		return new self($this->rows, $this->columns, $values);
+		return new self($rows, $columns, $values);
 	}
 
 	public function transpose() : self{
