@@ -89,12 +89,60 @@ final class MatrixTest extends TestCase{
 		Matrix::create([["assoc" => 0]]);
 	}
 
-	public function testInvalidBroadcastAndApply() : void{
+	public function testInvalidBroadcastAndApplyIncompatibleLColumn() : void{
 		$this->expectException(InvalidArgumentException::class);
-		$this->expectExceptionMessage("Cannot broadcast and apply a 3x2 matrix with another 3x3 matrix");
+		$this->expectExceptionMessage("Cannot broadcast matrix of size 3x2 to 3x3");
 		$m1 = Matrix::full(rows: 3, columns: 2, value: 1);
 		$m2 = Matrix::full(rows: 3, columns: 3, value: 1);
 		$m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+	}
+
+	public function testInvalidBroadcastAndApplyIncompatibleLRow() : void{
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage("Cannot broadcast matrix of size 2x3 to 3x3");
+		$m1 = Matrix::full(rows: 2, columns: 3, value: 1);
+		$m2 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+	}
+
+	public function testInvalidBroadcastAndApplyIncompatibleRColumn() : void{
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage("Cannot broadcast matrix of size 3x2 to 3x3");
+		$m1 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$m2 = Matrix::full(rows: 3, columns: 2, value: 1);
+		$m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+	}
+
+	public function testInvalidBroadcastAndApplyIncompatibleRRow() : void{
+		$this->expectException(InvalidArgumentException::class);
+		$this->expectExceptionMessage("Cannot broadcast matrix of size 2x3 to 3x3");
+		$m1 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$m2 = Matrix::full(rows: 2, columns: 3, value: 1);
+		$m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+	}
+
+	public function testValidBroadcastAndApply() : void{
+		$expect = Matrix::full(3, 3, 2);
+
+		$m1 = Matrix::full(rows: 1, columns: 3, value: 1);
+		$m2 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$result = $m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+		$this->assertEquals($expect, $result);
+
+		$m1 = Matrix::full(rows: 3, columns: 1, value: 1);
+		$m2 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$result = $m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+		$this->assertEquals($expect, $result);
+
+		$m1 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$m2 = Matrix::full(rows: 1, columns: 3, value: 1);
+		$result = $m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+		$this->assertEquals($expect, $result);
+
+		$m1 = Matrix::full(rows: 3, columns: 3, value: 1);
+		$m2 = Matrix::full(rows: 3, columns: 1, value: 1);
+		$result = $m1->broadcastAndApply($m2, fn($lvalue, $rvalue) => $lvalue + $rvalue);
+		$this->assertEquals($expect, $result);
 	}
 
 	public function testInvalidDotProduct() : void{
